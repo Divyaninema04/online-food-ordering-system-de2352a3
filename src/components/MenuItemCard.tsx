@@ -1,13 +1,17 @@
-import { Plus, Clock } from "lucide-react";
+import { Plus, Clock, Heart } from "lucide-react";
 import { addToCart } from "@/lib/cart-store";
+import { useFavorites } from "@/lib/favorites-store";
 import type { Database } from "@/integrations/supabase/types";
 
 type MenuItem = Database["public"]["Tables"]["menu_items"]["Row"];
 
 export function MenuItemCard({ item }: { item: MenuItem }) {
+  const { favoriteIds, toggle, isAuthed } = useFavorites();
+  const isFav = favoriteIds.has(item.id);
+
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-      <div className="aspect-[4/3] overflow-hidden bg-muted">
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         {item.image_url ? (
           <img
             src={item.image_url}
@@ -24,6 +28,19 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
           <span className="absolute left-3 top-3 rounded-md bg-gradient-ember px-2 py-0.5 text-xs font-bold text-ember-foreground">
             Featured
           </span>
+        )}
+        {isAuthed && (
+          <button
+            onClick={() => toggle(item.id)}
+            className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 backdrop-blur transition-all hover:scale-110"
+            aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
+          >
+            <Heart
+              className={`h-4 w-4 transition-colors ${
+                isFav ? "fill-ember text-ember" : "text-foreground"
+              }`}
+            />
+          </button>
         )}
       </div>
       <div className="flex flex-1 flex-col p-4">
