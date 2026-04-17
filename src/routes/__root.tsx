@@ -35,6 +35,11 @@ export const Route = createRootRoute({
       { property: "og:title", content: "BiteHub — Cafeteria Ordering" },
       { property: "og:description", content: "Order food from your cafeteria quickly and easily" },
       { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "BiteHub — Cafeteria Ordering" },
+      { name: "twitter:description", content: "Order food from your cafeteria quickly and easily" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fdb6032f-31fd-44fa-a9ff-ed5e75e21ef3/id-preview-eb508446--a5b9d14d-7094-4bf5-9e28-fe86debdff96.lovable.app-1776454386061.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fdb6032f-31fd-44fa-a9ff-ed5e75e21ef3/id-preview-eb508446--a5b9d14d-7094-4bf5-9e28-fe86debdff96.lovable.app-1776454386061.png" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
