@@ -1,23 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { ShoppingCart, UtensilsCrossed, ClipboardList, LogIn, LogOut } from "lucide-react";
+import { ShoppingCart, UtensilsCrossed, ClipboardList, LogIn, LogOut, Shield, Heart } from "lucide-react";
 import { useCart } from "@/lib/cart-store";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
+import { useUser, useIsAdmin } from "@/lib/use-user";
 
 export function Navbar() {
   const { count } = useCart();
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
+  const { user } = useUser();
+  const { isAdmin } = useIsAdmin();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
@@ -41,13 +31,34 @@ export function Navbar() {
           </Link>
 
           {user && (
+            <>
+              <Link
+                to="/favorites"
+                className="hidden sm:flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                activeProps={{ className: "!text-foreground" }}
+              >
+                <Heart className="h-4 w-4" />
+                Favorites
+              </Link>
+              <Link
+                to="/orders"
+                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                activeProps={{ className: "!text-foreground" }}
+              >
+                <ClipboardList className="h-4 w-4" />
+                Orders
+              </Link>
+            </>
+          )}
+
+          {isAdmin && (
             <Link
-              to="/orders"
-              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              to="/admin"
+              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-ember transition-colors hover:opacity-80"
               activeProps={{ className: "!text-foreground" }}
             >
-              <ClipboardList className="h-4 w-4" />
-              Orders
+              <Shield className="h-4 w-4" />
+              Admin
             </Link>
           )}
 
@@ -69,6 +80,7 @@ export function Navbar() {
             <button
               onClick={() => supabase.auth.signOut()}
               className="ml-2 flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              aria-label="Sign out"
             >
               <LogOut className="h-4 w-4" />
             </button>
